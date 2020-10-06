@@ -1,6 +1,6 @@
 # tictoc
 
-Matlab inspired time measurement for C. Simply include *timemeasurment.h*, put `tic()` where measurement should start and `toc()` where it ends. You will get a print to *stdout* containing file, function, line and the time elapsed (real and cpu) between `tic()` and `toc()`.
+Matlab inspired time measurement for C. Simply include *timemeasure.h*, put `tic()` where measurement should start and `toc()` where it ends. You will get a print to *stdout* containing file, function, line and the time elapsed (real and cpu) between `tic()` and `toc()`.
 
 `tic()`and `toc()`can be nested and the nesting level is included in the *stdout* output.
 
