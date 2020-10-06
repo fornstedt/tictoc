@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include "timemeasure.h"
 
-#define MAX_NESTED 32
+#ifndef DISABLE_MEASUREMENT
+#define MAX_NESTED 128
+#define CPU_LIMIT  0.000
+#define REAL_LIMIT 0.000
 
 static unsigned int _nestedLevel = 0;
 static struct timespec _cpuStart[MAX_NESTED];
@@ -36,7 +39,10 @@ void _toc(char const *fileName, char const *callerName)
         elapsedCpu = (cpuStop.tv_sec - _cpuStart[_nestedLevel-1].tv_sec) + (cpuStop.tv_nsec - _cpuStart[_nestedLevel-1].tv_nsec) / 1e9;
         elapsedReal = (realStop.tv_sec - _realStart[_nestedLevel-1].tv_sec) + (realStop.tv_nsec - _realStart[_nestedLevel-1].tv_nsec) / 1e9;
 
-        printf("Execution time for %s:%s(), %.3f ms (real), %.3f ms (cpu).\n", fileName, callerName, elapsedReal, elapsedCpu);
+        if (elapsedCpu > CPU_LIMIT || elapsedReal > REAL_LIMIT)
+        {
+            printf("%s:%s(), %d level, %.3f ms (real), %.3f ms (cpu).\n", fileName, callerName, _nestedLevel, elapsedReal, elapsedCpu);
+        }
     }
     else
     {
@@ -48,3 +54,4 @@ void _toc(char const *fileName, char const *callerName)
         _nestedLevel--;
     }
 }
+#endif
