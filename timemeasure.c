@@ -11,12 +11,12 @@ static unsigned int _nestedLevel = 0;
 static struct timespec _cpuStart[MAX_NESTED];
 static struct timespec _realStart[MAX_NESTED];
 
-void _tic(char const *fileName, char const *callerName)
+void _tic(char const *fileName, int lineNumber, char const *callerName)
 {
-    _tic_msg(fileName, callerName, NULL);
+    _tic_msg(fileName, lineNumber, callerName, NULL);
 }
 
-void _tic_msg(char const *fileName, char const *callerName, const char *msg)
+void _tic_msg(char const *fileName, int lineNumber, char const *callerName, const char *msg)
 {
     if (_nestedLevel < MAX_NESTED)
     {
@@ -32,16 +32,16 @@ void _tic_msg(char const *fileName, char const *callerName, const char *msg)
 
     if (msg != NULL)
     {
-        printf("%s:%s(), level %d, start - %s\n", fileName, callerName, _nestedLevel, msg);
+        printf("%s:%s:%d, level %d, start - %s\n", fileName, callerName, lineNumber, _nestedLevel, msg);
     }
 }
 
-void _toc(char const *fileName, char const *callerName)
+void _toc(char const *fileName, int lineNumber, char const *callerName)
 {
-    _toc_msg(fileName, callerName, NULL);
+    _toc_msg(fileName, lineNumber, callerName, NULL);
 }
 
-void _toc_msg(char const *fileName, char const *callerName, const char *msg)
+void _toc_msg(char const *fileName, int lineNumber, char const *callerName, const char *msg)
 {
     if (_nestedLevel < MAX_NESTED +1 && _nestedLevel > 0)
     {
@@ -52,18 +52,22 @@ void _toc_msg(char const *fileName, char const *callerName, const char *msg)
 
         clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &cpuStop);
         clock_gettime(CLOCK_REALTIME, &realStop);
-        elapsedCpu = (cpuStop.tv_sec - _cpuStart[_nestedLevel-1].tv_sec) + (cpuStop.tv_nsec - _cpuStart[_nestedLevel-1].tv_nsec) / 1e9;
-        elapsedReal = (realStop.tv_sec - _realStart[_nestedLevel-1].tv_sec) + (realStop.tv_nsec - _realStart[_nestedLevel-1].tv_nsec) / 1e9;
+        elapsedCpu  = (cpuStop.tv_sec   - _cpuStart[_nestedLevel-1].tv_sec) +
+                      (cpuStop.tv_nsec  - _cpuStart[_nestedLevel-1].tv_nsec) / 1e9;
+        elapsedReal = (realStop.tv_sec  - _realStart[_nestedLevel-1].tv_sec) +
+                      (realStop.tv_nsec - _realStart[_nestedLevel-1].tv_nsec) / 1e9;
 
         if (elapsedCpu > CPU_LIMIT || elapsedReal > REAL_LIMIT)
         {
             if (msg != NULL)
             {
-                printf("%s:%s(), level %d, %.3f ms (real), %.3f ms (cpu) - %s\n", fileName, callerName, _nestedLevel, elapsedReal, elapsedCpu, msg);
+                printf("%s:%s:%d, level %d, %.3f ms (real), %.3f ms (cpu) - %s\n",
+                       fileName, callerName, lineNumber, _nestedLevel, elapsedReal, elapsedCpu, msg);
             }
             else
             {
-                printf("%s:%s(), level %d, %.3f ms (real), %.3f ms (cpu)\n", fileName, callerName, _nestedLevel, elapsedReal, elapsedCpu);
+                printf("%s:%s:%d, level %d, %.3f ms (real), %.3f ms (cpu)\n",
+                       fileName, callerName, lineNumber, _nestedLevel, elapsedReal, elapsedCpu);
             }
         }
     }

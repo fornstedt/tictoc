@@ -3,7 +3,7 @@ CCFLAGS=-Wall
 LDFLAGS=
 SOURCES=$(wildcard *.c)
 OBJECTS=$(SOURCES:.c=.o)
-TARGET=timetest
+TARGET=test
 
 all: $(TARGET)
 

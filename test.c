@@ -12,7 +12,7 @@ int main(void)
 
 void func(void)
 {
-    tic();
+    tic_msg("func");
 
     func2();
     func2();
@@ -31,5 +31,5 @@ void func2(void)
         x *= 7;
     }
     sleep(1);
-    toc();
+    toc_msg("func2");
 }
