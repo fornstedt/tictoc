@@ -1,3 +1,5 @@
+#ifndef _TIMEMEASUREMENT_H
+#define _TIMEMEASUREMENT_H
 
 // #define DISABLE_MEASUREMENT
 
@@ -21,3 +23,5 @@ void _toc_msg(char const *fileName, char const *callerName, const char *msg);
 void _tic_msg(char const *fileName, char const *callerName, const char *msg);
 
 #endif
+
+#endif /* _TIMEMEASUREMENT_H */
